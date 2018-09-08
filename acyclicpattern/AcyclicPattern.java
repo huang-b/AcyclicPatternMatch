@@ -28,7 +28,7 @@ public class AcyclicPattern {
 		Stack<String> punctStack = new Stack<>();
 		punctStack.push(startPunctuation);
 		Stack<Link> linkStack = new Stack<>();
-		linkStack.push(new EmptyLink());
+		//linkStack.push(new EmptyLink());
 		
 		boolean repeat = true;
 		while(repeat && parser.hasNext()) {
