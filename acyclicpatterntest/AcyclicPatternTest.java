@@ -11,13 +11,13 @@ class AcyclicPatternTest {
 
 	@Test
 	void testPaser() {
-		Parser parser = new Parser("<[²¥]·Å|À´>[Ò»|¼¸]<Ê×|Çú|¸ö>@{singer}µÄ<¸è[Çú]|[Á÷ĞĞ]ÒôÀÖ>$");
+		Parser parser = new Parser("<[æ’­]æ”¾|æ¥>[ä¸€|å‡ ]<é¦–|æ›²|ä¸ª>@{singer}çš„<æ­Œ[æ›²]|[æµè¡Œ]éŸ³ä¹>$");
 		StringBuilder builder = new StringBuilder();
 		while(parser.hasNext()) {
 			builder.append(parser.next());
 		}
 		String parsed = builder.toString();
-		if(!"<[²¥]·Å|À´>+[Ò»|¼¸]+<Ê×|Çú|¸ö>+@{singer}µÄ+<¸è+[Çú]|[Á÷ĞĞ]+ÒôÀÖ>".equals(parsed)) {
+		if(!"<[æ’­]+æ”¾|æ¥>+[ä¸€|å‡ ]+<é¦–|æ›²|ä¸ª>+@{singer}çš„+<æ­Œ+[æ›²]|[æµè¡Œ]+éŸ³ä¹>$".equals(parsed)) {
 			fail(parsed);
 		}
 	}
@@ -26,11 +26,11 @@ class AcyclicPatternTest {
 	void testPatternMatch() {
 		try {
 			AcyclicPattern ap = new AcyclicPattern(
-					"<[²¥]·Å|À´>[Ò»|¼¸]<Ê×|Çú|¸ö>@{singer}µÄ<¸è[Çú]|[Á÷ĞĞ]ÒôÀÖ>");
-			assert(ap.match("À´¼¸Ê×@{singer}µÄ¸èÇú"));
-			assert(ap.match("À´Ê×@{singer}µÄ¸èÇú"));
-			assert(ap.match("À´Ò»Ê×@{singer}µÄÁ÷ĞĞÒôÀÖ"));
-			assert(!ap.match("À´¼¸Ê×@{singer}µÄÁ÷ĞĞ¸èÇú"));
+					"<[æ’­]æ”¾|æ¥>[ä¸€|å‡ ]<é¦–|æ›²|ä¸ª>@{singer}çš„<æ­Œ[æ›²]|[æµè¡Œ]éŸ³ä¹>");
+			assert(ap.match("æ¥å‡ é¦–@{singer}çš„æ­Œæ›²"));
+			assert(ap.match("æ¥é¦–@{singer}çš„æ­Œæ›²"));
+			assert(ap.match("æ¥ä¸€é¦–@{singer}çš„æµè¡ŒéŸ³ä¹"));
+			assert(!ap.match("æ¥å‡ é¦–@{singer}çš„æµè¡Œæ­Œæ›²"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());

@@ -1,7 +1,9 @@
 package acyclicpattern;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Parser {
 	
@@ -9,20 +11,31 @@ public class Parser {
 	private int i;
 	private boolean endWord;
 	private boolean endSubPattern;
-	private Map<Character, String> punctMap;
+	private Map<Character, String> singletons;
+	private Map<Character, String> leftHands;
+	private Map<Character, String> rightHands;
+	private Set<Character> punctSet;
 	
 	public Parser(String s) {
 		this.s = s;
 		i = 0;
-		endWord = false;
-		endSubPattern = false;
-		punctMap = new HashMap<>();
-		punctMap.put('<', "<");
-		punctMap.put('>', ">");
-		punctMap.put('[', "[");
-		punctMap.put(']', "]");
-		punctMap.put('|', "|");
-		punctMap.put('$', "$");
+		endWord = endSubPattern = false;
+
+		singletons = new HashMap<>();
+		singletons.put('|', "|");
+		singletons.put('$', "$");
+
+		leftHands = new HashMap<>();
+		leftHands.put('<', "<");
+		leftHands.put('[', "[");
+
+		rightHands = new HashMap<>();
+		rightHands.put('>', ">");
+		rightHands.put(']', "]");
+
+		punctSet = new HashSet<>(singletons.keySet());
+		punctSet.addAll(leftHands.keySet());
+		punctSet.addAll(rightHands.keySet());
 	}
 	
 	public boolean hasNext() {
@@ -30,16 +43,19 @@ public class Parser {
 	}
 	
 	public String next() {
-		String punctuation = punctMap.get(s.charAt(i));
-		if(null != punctuation) {
-			if(endWord && (s.charAt(i) == '<' || s.charAt(i) == '[')) {
-				endWord = false;
-				return "+";
-			}
+		if(singletons.containsKey(s.charAt(i))) {
+			endWord = endSubPattern = false;
+			return singletons.get(s.charAt(i++));
+		}
+		if(leftHands.containsKey(s.charAt(i))) {
+			String symbol = (endWord || endSubPattern) ? "+" : leftHands.get(s.charAt(i++));
+			endWord = endSubPattern = false;
+			return symbol;
+		}
+		if(rightHands.containsKey(s.charAt(i))) {
 			endWord = false;
-			endSubPattern = s.charAt(i) == '>' || s.charAt(i) == ']';
-			i++;
-			return punctuation;
+			endSubPattern = true;
+			return rightHands.get(s.charAt(i++));
 		}
 		if(endSubPattern) {
 			endSubPattern = false;
@@ -48,7 +64,7 @@ public class Parser {
 		StringBuilder builder = new StringBuilder();
 		do {
 			builder.append(s.charAt(i++));
-		} while(hasNext() && !punctMap.containsKey(s.charAt(i)));
+		} while(hasNext() && !punctSet.contains(s.charAt(i)));
 		endWord = true;
 		return builder.toString();
 	}

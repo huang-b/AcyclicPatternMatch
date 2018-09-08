@@ -36,7 +36,7 @@ public class AcyclicPattern {
 			switch(s) {
 			case "<": 
 				linkStack.push(constructLink(parser, "<", ">"));
-				concat(linkStack);
+				//concat(linkStack);
 				break;
 			case "[": 
 				linkStack.push(constructLink(parser, "[", "]"));

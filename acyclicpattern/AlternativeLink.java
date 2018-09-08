@@ -14,7 +14,7 @@ public class AlternativeLink extends Link {
 	public int match(String s, int i) {
 		int j = link1.match(s, i);
 		if(j < 0) {
-			link2.match(s, i);
+			j = link2.match(s, i);
 		}
 		return j;
 	}
